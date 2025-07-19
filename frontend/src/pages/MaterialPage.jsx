@@ -270,7 +270,7 @@ materials.forEach((item) => {
 
             {/* Syllabus */}
             <div className="w-full">
-              <a
+              <a 
                 href="https://drive.google.com/your-syllabus-folder-link"
                 target="_blank"
                 rel="noreferrer"
