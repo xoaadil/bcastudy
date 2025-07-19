@@ -40,6 +40,22 @@ let getSubjectBySemester = async (req, res, next) => {
   }
 };
 
+let getSubject= async(req,res,next)=>{
+let subId=req.params.id;
+try{
+let subject= await Subjectdb.findOne({_id : subId});
+return res.status(200).json({
+  message : "here is your subject",
+  subject : subject,
+})
+}
+catch(err){
+  return res.status(500).json({
+    message : "internal server side error ",
+    error : err,
+  })
+}
+}
 
 
-module.exports= { getSubjectBySemester,createSubject};
+module.exports= { getSubjectBySemester,createSubject ,getSubject};

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, BookOpen, ArrowLeft, GraduationCap } from "lucide-react";
+import { ChevronRight, BookOpen, ArrowLeft, GraduationCap, Hash } from "lucide-react";
 
 function SemesterSubjects() {
   const { id } = useParams();
@@ -12,7 +12,21 @@ function SemesterSubjects() {
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_URL}/api/subjects/${id}`)
-      .then((res) => setSubjects(res.data.subjects))
+      .then((res) => {
+        // Sort subjects by code number (101, 102, 103, etc.)
+        const sortedSubjects = res.data.subjects.sort((a, b) => {
+          // Extract number from code (e.g., "BCA-101" -> 101)
+          const getCodeNumber = (code) => {
+            if (!code) return 0;
+            const match = code.match(/(\d+)$/);
+            return match ? parseInt(match[1]) : 0;
+          };
+          
+          return getCodeNumber(a.code) - getCodeNumber(b.code);
+        });
+        
+        setSubjects(sortedSubjects);
+      })
       .catch((err) => console.log(err));
   }, [id]);
 
@@ -69,18 +83,35 @@ function SemesterSubjects() {
                 {/* Gradient overlay */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${colorVariants[index % colorVariants.length]} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-300`}></div>
                 
-                {/* Subject Icon */}
+                {/* Subject Icon and Short Code */}
                 <div className="relative z-10 flex items-center justify-between mb-6">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${iconVariants[index % iconVariants.length]} group-hover:scale-110 transition-transform duration-300`}>
-                    <BookOpen className="w-6 h-6" />
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${iconVariants[index % iconVariants.length]} group-hover:scale-110 transition-transform duration-300`}>
+                      <BookOpen className="w-6 h-6" />
+                    </div>
+                    {/* Subject Short Form Badge */}
+                    {sub.short && (
+                      <div className="bg-white/10 backdrop-blur-md rounded-lg px-3 py-1 border border-white/20">
+                        <span className="text-xs font-bold text-white">{sub.short}</span>
+                      </div>
+                    )}
                   </div>
                   <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
                 </div>
 
-                {/* Subject Name */}
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-white transition-colors duration-300">
-                  {sub.name}
-                </h3>
+                {/* Subject Name and Code */}
+                <div className="mb-3">
+                  <h3 className="text-xl font-bold text-white mb-1 group-hover:text-white transition-colors duration-300">
+                    {sub.name}
+                  </h3>
+                  {/* Subject Code */}
+                  {sub.code && (
+                    <div className="flex items-center space-x-1">
+                      <Hash className="w-3 h-3 text-gray-400" />
+                      <span className="text-sm text-gray-400 font-medium">{sub.code}</span>
+                    </div>
+                  )}
+                </div>
                 
                 {/* Description */}
                 <p className="text-gray-300 text-sm mb-4 group-hover:text-gray-200 transition-colors duration-300">
@@ -88,7 +119,7 @@ function SemesterSubjects() {
                 </p>
 
                 {/* Resource indicators */}
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 mb-4">
                   <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -96,7 +127,7 @@ function SemesterSubjects() {
                 </div>
 
                 {/* Progress bar */}
-                <div className="mt-4 w-full bg-gray-700 rounded-full h-2">
+                <div className="mb-4 w-full bg-gray-700 rounded-full h-2">
                   <div 
                     className={`h-2 bg-gradient-to-r ${colorVariants[index % colorVariants.length]} rounded-full transition-all duration-500 group-hover:w-full`}
                     style={{ width: `${Math.floor(Math.random() * 60) + 40}%` }}
@@ -104,7 +135,7 @@ function SemesterSubjects() {
                 </div>
                 
                 {/* Click to explore */}
-                <div className="mt-4 text-center">
+                <div className="text-center">
                   <span className="text-xs text-gray-400 group-hover:text-gray-200 transition-colors duration-300">
                     Click to explore
                   </span>

@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 function MaterialPage() {
   const { id } = useParams();
   const [materials, setMaterials] = useState([]);
+  const [subject, setSubject] = useState(null);
 
   useEffect(() => {
     const fetchMaterial = async () => {
@@ -17,7 +18,20 @@ function MaterialPage() {
         console.error(err);
       }
     };
+
+    const fetchSubject = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_URL}/api/subjects/single/${id}`
+        );
+        setSubject(res.data.subject);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     fetchMaterial();
+    fetchSubject();
   }, [id]);
 
   const unitWiseMaterial = {};
@@ -62,12 +76,34 @@ function MaterialPage() {
           <div className="inline-flex items-center justify-center w-12 h-12 mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-xl">
             <span className="text-lg">📚</span>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Study Materials
-          </h1>
-          <p className="text-purple-200 text-base">
-            Explore comprehensive resources for your studies
-          </p>
+          {subject ? (
+            <>
+              <h1 className="text-3xl font-bold text-white mb-2">
+                {subject.name}
+              </h1>
+              <div className="flex items-center justify-center gap-4 mb-2">
+                <span className="text-purple-200 text-base">
+                  Code: {subject.code}
+                </span>
+                <span className="text-purple-200 text-base">•</span>
+                <span className="text-purple-200 text-base">
+                  Short: {subject.short}
+                </span>
+              </div>
+              <p className="text-purple-200 text-base">
+                Explore comprehensive resources for your studies
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-3xl font-bold text-white mb-2">
+                Study Materials
+              </h1>
+              <p className="text-purple-200 text-base">
+                Explore comprehensive resources for your studies
+              </p>
+            </>
+          )}
         </div>
       </div>
 
