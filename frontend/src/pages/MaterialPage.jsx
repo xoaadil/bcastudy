@@ -33,39 +33,61 @@ function MaterialPage() {
     fetchMaterial();
     fetchSubject();
   }, [id]);
+console.log(materials);
+console.log(subject);
+const unitWiseMaterial = {};
+let sixInOne = null;
+let pyq = null;
 
-  const unitWiseMaterial = {};
-  let sixInOne = null;
-  let pyq = null;
+// Roman numeral to number mapping
+const romanToNumber = {
+  'I': '1',
+  'II': '2', 
+  'III': '3',
+  'IV': '4',
+  'V': '5',
+  'VI': '6',
+  'VII': '7',
+  'VIII': '8',
+  'IX': '9',
+  'X': '10'
+};
 
-  materials.forEach((item) => {
-    if (item.category === "6in1") {
-      sixInOne = item;
-      return;
+materials.forEach((item) => {
+  if (item.category === "6in1") {
+    sixInOne = item;
+    return;
+  }
+
+  if (item.category === "pyq") {
+    pyq = item;
+    return;
+  }
+
+  // Look for UNIT-I, UNIT-II, etc. pattern
+  const match = item.title.match(/UNIT[-\s]*([IVX]+)/i);
+  let unit = "Other";
+  
+  if (match) {
+    const romanNumeral = match[1].toUpperCase();
+    const arabicNumber = romanToNumber[romanNumeral];
+    unit = arabicNumber ? `Unit ${arabicNumber}` : "Other";
+  }
+
+  if (!unitWiseMaterial[unit]) {
+    unitWiseMaterial[unit] = { typed: null, handwritten: null, video: null };
+  }
+
+  if (item.category === "notes") {
+    if (item.subtype === "typed") {
+      unitWiseMaterial[unit].typed = item;
+    } else if (item.subtype === "handwritten") {
+      unitWiseMaterial[unit].handwritten = item;
     }
-
-    if (item.category === "pyq") {
-      pyq = item;
-      return;
-    }
-
-    const match = item.title.match(/Unit\s*(\d+)/i);
-    const unit = match ? `Unit ${match[1]}` : "Other";
-
-    if (!unitWiseMaterial[unit]) {
-      unitWiseMaterial[unit] = { typed: null, handwritten: null, video: null };
-    }
-
-    if (item.category === "notes") {
-      if (item.subtype === "typed") {
-        unitWiseMaterial[unit].typed = item;
-      } else if (item.subtype === "handwritten") {
-        unitWiseMaterial[unit].handwritten = item;
-      }
-    } else if (item.category === "video") {
-      unitWiseMaterial[unit].video = item;
-    }
-  });
+  } else if (item.category === "video") {
+    unitWiseMaterial[unit].video = item;
+  }
+});
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800">
