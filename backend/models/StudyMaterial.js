@@ -24,7 +24,7 @@ const materialSchema = new Schema({
   
   subtype: {
     type: String,
-    enum: ["typed", "handwritten"], // only used when category === "notes"
+    enum: ["typed", "handwritten"], 
   },
 });
 

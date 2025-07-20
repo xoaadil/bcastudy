@@ -45,7 +45,7 @@ export default function Advice() {
             <span className="text-2xl">🌟</span>
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-            Life Advice & Experience
+             Experience & Advice
           </h1>
         </div>
         <p className="text-gray-300 text-xl max-w-2xl mx-auto">
@@ -84,7 +84,7 @@ export default function Advice() {
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${gradientColors[index % gradientColors.length]} animate-pulse`}></div>
                   <span className="text-gray-400 text-sm group-hover:text-blue-300 transition-colors duration-300">
-                    Life Experience
+                   Reference
                   </span>
                 </div>
                 <div className="text-blue-400 group-hover:text-cyan-400 transition-colors duration-300">

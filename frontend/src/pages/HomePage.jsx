@@ -116,7 +116,7 @@ export default function HomePage() {
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-yellow-300 transition-colors duration-300">
-                Life Advice
+                Some Advices
               </h3>
 
               <p className="text-gray-300 mb-6 leading-relaxed">
@@ -157,7 +157,7 @@ export default function HomePage() {
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-blue-300 transition-colors duration-300">
-                Coding
+                Programming
               </h3>
 
               <p className="text-gray-300 mb-6 leading-relaxed">

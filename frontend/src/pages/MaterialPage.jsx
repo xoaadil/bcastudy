@@ -6,6 +6,7 @@ function MaterialPage() {
   const { id } = useParams();
   const [materials, setMaterials] = useState([]);
   const [subject, setSubject] = useState(null);
+  const [semester, setSemester] = useState(null);
 
   useEffect(() => {
     const fetchMaterial = async () => {
@@ -19,12 +20,11 @@ function MaterialPage() {
       }
     };
 
-    const fetchSubject = async () => {
+     const fetchSubject = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_URL}/api/subjects/single/${id}`
-        );
+        const res = await axios.get(`${import.meta.env.VITE_URL}/api/subjects/single/${id}`);
         setSubject(res.data.subject);
+        setSemester(res.data.semester);
       } catch (err) {
         console.error(err);
       }
@@ -33,61 +33,79 @@ function MaterialPage() {
     fetchMaterial();
     fetchSubject();
   }, [id]);
-console.log(materials);
-console.log(subject);
-const unitWiseMaterial = {};
-let sixInOne = null;
-let pyq = null;
+  //console.log(`materials : ${materials}`);
+  //console.log( `subject : ${subject}`);
+console.log(semester);
+  const syllabusLinks = {
+    "Semester 1":
+      "https://drive.google.com/file/d/1BWg1IJyuz4idRKjDeo9kXUwfuy5lCNqg/view?usp=sharing",
+    "Semester 2":
+      "https://drive.google.com/file/d/1uJHJLeSwu5V-n1IoJDHeAvoRB-69TigY/view?usp=sharing",
+    "Semester 3":
+      "https://drive.google.com/file/d/14Qa7eUcve-8iTbM33eNIfXSUs-6IOSmu/view?usp=sharing",
+    "Semester 4":
+      "https://drive.google.com/file/d/1puR9_D2Juf0h9WI7B34td7tjCHHU_2Vf/view?usp=sharing",
+    "Semester 5":
+      "https://drive.google.com/file/d/1uFIEQxgBx24MfaEaaNvRzzxpaWjozZ7V/view?usp=sharing",
+    "Semester 6":
+      "https://drive.google.com/file/d/1BvSfJehJ7j9t0XNyxtNa-kZ5ntJyqi4Y/view?usp=sharing",
+  };
 
-// Roman numeral to number mapping
-const romanToNumber = {
-  'I': '1',
-  'II': '2', 
-  'III': '3',
-  'IV': '4',
-  'V': '5',
-  'VI': '6',
-  'VII': '7',
-  'VIII': '8',
-  'IX': '9',
-  'X': '10'
-};
+  const syllabusLink = semester?.name ? syllabusLinks[semester.name] : null;
 
-materials.forEach((item) => {
-  if (item.category === "6in1") {
-    sixInOne = item;
-    return;
-  }
+  const unitWiseMaterial = {};
+  let sixInOne = null;
+  let pyq = null;
 
-  if (item.category === "pyq") {
-    pyq = item;
-    return;
-  }
+  // Roman numeral to number mapping
+  const romanToNumber = {
+    I: "1",
+    II: "2",
+    III: "3",
+    IV: "4",
+    V: "5",
+    VI: "6",
+    VII: "7",
+    VIII: "8",
+    IX: "9",
+    X: "10",
+  };
 
-  // Look for UNIT-I, UNIT-II, etc. pattern
-  const match = item.title.match(/UNIT[-\s]*([IVX]+)/i);
-  let unit = "Other";
-  
-  if (match) {
-    const romanNumeral = match[1].toUpperCase();
-    const arabicNumber = romanToNumber[romanNumeral];
-    unit = arabicNumber ? `Unit ${arabicNumber}` : "Other";
-  }
-
-  if (!unitWiseMaterial[unit]) {
-    unitWiseMaterial[unit] = { typed: null, handwritten: null, video: null };
-  }
-
-  if (item.category === "notes") {
-    if (item.subtype === "typed") {
-      unitWiseMaterial[unit].typed = item;
-    } else if (item.subtype === "handwritten") {
-      unitWiseMaterial[unit].handwritten = item;
+  materials.forEach((item) => {
+    if (item.category === "6in1") {
+      sixInOne = item;
+      return;
     }
-  } else if (item.category === "video") {
-    unitWiseMaterial[unit].video = item;
-  }
-});
+
+    if (item.category === "pyq") {
+      pyq = item;
+      return;
+    }
+
+    // Look for UNIT-I, UNIT-II, etc. pattern
+    const match = item.title.match(/UNIT[-\s]*([IVX]+)/i);
+    let unit = "Other";
+
+    if (match) {
+      const romanNumeral = match[1].toUpperCase();
+      const arabicNumber = romanToNumber[romanNumeral];
+      unit = arabicNumber ? `Unit ${arabicNumber}` : "Other";
+    }
+
+    if (!unitWiseMaterial[unit]) {
+      unitWiseMaterial[unit] = { typed: null, handwritten: null, video: null };
+    }
+
+    if (item.category === "notes") {
+      if (item.subtype === "typed") {
+        unitWiseMaterial[unit].typed = item;
+      } else if (item.subtype === "handwritten") {
+        unitWiseMaterial[unit].handwritten = item;
+      }
+    } else if (item.category === "video") {
+      unitWiseMaterial[unit].video = item;
+    }
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800">
@@ -145,7 +163,7 @@ materials.forEach((item) => {
                 </div>
                 <h2 className="text-xl font-bold text-white">{unit}</h2>
               </div>
-              
+
               <div className="space-y-2">
                 {/* Typed Notes */}
                 <div className="w-full">
@@ -222,7 +240,7 @@ materials.forEach((item) => {
             </div>
             <h2 className="text-2xl font-bold text-white">Extra Resources</h2>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* 6-in-1 Notes */}
             <div className="w-full">
@@ -235,7 +253,9 @@ materials.forEach((item) => {
                 >
                   <span className="text-2xl mb-1">📘</span>
                   <span className="text-base">6-in-1 Notes</span>
-                  <span className="text-xs opacity-90 mt-1">Complete Package</span>
+                  <span className="text-xs opacity-90 mt-1">
+                    Complete Package
+                  </span>
                 </a>
               ) : (
                 <div className="flex flex-col items-center justify-center w-full px-4 py-5 bg-gray-700/50 text-gray-400 font-medium rounded-lg border border-gray-600/50">
@@ -257,7 +277,9 @@ materials.forEach((item) => {
                 >
                   <span className="text-2xl mb-1">📝</span>
                   <span className="text-base">Previous Year Questions</span>
-                  <span className="text-xs opacity-90 mt-1">Practice Papers</span>
+                  <span className="text-xs opacity-90 mt-1">
+                    Practice Papers
+                  </span>
                 </a>
               ) : (
                 <div className="flex flex-col items-center justify-center w-full px-4 py-5 bg-gray-700/50 text-gray-400 font-medium rounded-lg border border-gray-600/50">
@@ -269,18 +291,22 @@ materials.forEach((item) => {
             </div>
 
             {/* Syllabus */}
-            <div className="w-full">
-              <a 
-                href="https://drive.google.com/your-syllabus-folder-link"
-                target="_blank"
-                rel="noreferrer"
-                className="flex flex-col items-center justify-center w-full px-4 py-5 bg-gradient-to-br from-purple-500 to-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
-              >
-                <span className="text-2xl mb-1">📄</span>
-                <span className="text-base">Syllabus</span>
-                <span className="text-xs opacity-90 mt-1">Course Outline</span>
-              </a>
-            </div>
+            {syllabusLink && (
+              <div className="w-full">
+                <a
+                  href={syllabusLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex flex-col items-center justify-center w-full px-4 py-5 bg-gradient-to-br from-purple-500 to-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
+                >
+                  <span className="text-2xl mb-1">📄</span>
+                  <span className="text-base">Syllabus</span>
+                  <span className="text-xs opacity-90 mt-1">
+                    Course Outline
+                  </span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,13 +1,73 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- ✅ Basic Meta -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- ✅ Primary Meta Tags -->
+    <title>BCA Study - Free Notes, PYQs & Videos for BCA Students | bcastudy.tech</title>
+    <meta name="description" content="Complete free BCA study resources: semester-wise notes, previous year question papers (PYQs), video lectures, and syllabus for all universities. Perfect for exam preparation.">
+    <meta name="keywords" content="BCA Study, BCA Notes, BCA PYQs, BCA Videos, BCA Syllabus, BCA Exam Preparation, Free Study Material, University Notes">
+    <meta name="author" content="Aadil Siddiqui">
+    <meta name="robots" content="index, follow">
+
+    <!-- ✅ Open Graph / Facebook (for social sharing) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bcastudy.tech/">
+    <meta property="og:title" content="BCA Study - Free Notes, PYQs & Videos for BCA Students">
+    <meta property="og:description" content="Get all BCA study materials in one place - notes, previous year questions, video lectures, and syllabus. 100% Free.">
+    <meta property="og:image" content="https://bcastudy.tech/images/social-preview.jpg">
+
+    <!-- ✅ Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BCA Study - Free Notes, PYQs & Videos for BCA Students">
+    <meta name="twitter:description" content="Complete BCA resources for all semesters - notes, PYQs, videos in one place.">
+    <meta name="twitter:image" content="https://bcastudy.tech/images/social-preview.jpg">
+
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- ✅ Preload Critical Resources -->
+    <link rel="preload" href="/src/main.jsx" as="script">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- ✅ Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "BCA Study",
+      "url": "https://bcastudy.tech",
+      "description": "Free BCA study resources for university students",
+      "founder": {
+        "@type": "Person",
+        "name": "Aadil Siddiqui"
+      },
+      "keywords": ["BCA", "Study Materials", "University Notes"]
+    }
+    </script>
   </head>
+
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- ✅ Load scripts efficiently -->
+    <script type="module" src="/src/main.jsx" defer></script>
+    
+    <!-- ✅ Simple analytics (optional) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
   </body>
 </html>

@@ -1,3 +1,4 @@
+const Semesterdb = require("../models/Semester");
 const Subjectdb = require("../models/Subject");
 
 let createSubject = async (req, res, next) => {
@@ -44,9 +45,13 @@ let getSubject= async(req,res,next)=>{
 let subId=req.params.id;
 try{
 let subject= await Subjectdb.findOne({_id : subId});
+let semester= await Semesterdb.findOne({_id :subject.semester});
+console.log(semester);
+console.log(semester.name);
 return res.status(200).json({
   message : "here is your subject",
   subject : subject,
+  semester :semester,
 })
 }
 catch(err){
