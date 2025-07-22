@@ -13,6 +13,7 @@ import {
 
 export default function Coding() {
   const [coding, setCoding] = useState([]);
+  const [expandedCards, setExpandedCards] = useState(new Set());
 
   useEffect(() => {
     const fetchCoding = async () => {
@@ -25,6 +26,21 @@ export default function Coding() {
     };
     fetchCoding();
   }, []);
+
+  const toggleExpanded = (cardIndex) => {
+    const newExpanded = new Set(expandedCards);
+    if (newExpanded.has(cardIndex)) {
+      newExpanded.delete(cardIndex);
+    } else {
+      newExpanded.add(cardIndex);
+    }
+    setExpandedCards(newExpanded);
+  };
+
+  const truncateText = (text, maxLength = 120) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
 
   const gradientColors = [
     "from-violet-500 to-purple-600",
@@ -71,74 +87,90 @@ export default function Coding() {
       {/* Advice Cards Grid */}
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {coding.map((item, index) => (
-          <a
-            href={item.link}
-            key={index}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative cursor-pointer"
-          >
-            <div key={index} className="group relative cursor-pointer">
-              {/* Card Background with Gradient */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${
-                  gradientColors[index % gradientColors.length]
-                } rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-all duration-500`}
-              ></div>
+          <div key={index} className="group relative">
+            {/* Card Background with Gradient */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${
+                gradientColors[index % gradientColors.length]
+              } rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-all duration-500`}
+            ></div>
 
-              {/* Main Card */}
-              <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 shadow-2xl hover:shadow-blue-500/25">
-                {/* Card Header */}
-                <div className="mb-6">
-                  <h2 className="text-2xl font-semibold text-white group-hover:text-blue-300 transition-colors duration-300">
-                    {item.title}
-                  </h2>
-                </div>
-
-                {/* Description */}
-                <p className="text-gray-300 leading-relaxed mb-6 group-hover:text-white transition-colors duration-300">
-                  {item.description}
-                </p>
-
-                {/* Interactive Elements */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`w-3 h-3 rounded-full bg-gradient-to-r ${
-                        gradientColors[index % gradientColors.length]
-                      } animate-pulse`}
-                    ></div>
-
-                    <span className="text-gray-400 text-sm group-hover:text-blue-300 transition-colors duration-300">
-                      Click here for resources
-                    </span>
-                  </div>
-                  <div className="text-blue-400 group-hover:text-cyan-400 transition-colors duration-300">
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Decorative Elements */}
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
-                <div
-                  className="absolute -bottom-2 -left-2 w-3 h-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"
-                  style={{ animationDelay: "0.5s" }}
-                ></div>
+            {/* Main Card */}
+            <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 shadow-2xl hover:shadow-blue-500/25">
+              {/* Card Header */}
+              <div className="mb-6">
+                <h2 className="text-2xl font-semibold text-white group-hover:text-blue-300 transition-colors duration-300">
+                  {item.title}
+                </h2>
               </div>
-            </div>{" "}
-          </a>
+
+              {/* Description */}
+              <div className="mb-6">
+                <p className="text-gray-300 leading-relaxed group-hover:text-white transition-colors duration-300">
+                  {expandedCards.has(index) ? item.description : truncateText(item.description)}
+                </p>
+                
+                {item.description.length > 120 && (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleExpanded(index);
+                    }}
+                    className="text-blue-400 hover:text-cyan-400 text-sm mt-2 transition-colors duration-300"
+                  >
+                    {expandedCards.has(index) ? 'Show Less' : 'Read More'}
+                  </button>
+                )}
+              </div>
+
+              {/* Interactive Elements */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-3 h-3 rounded-full bg-gradient-to-r ${
+                      gradientColors[index % gradientColors.length]
+                    } animate-pulse`}
+                  ></div>
+
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 text-sm group-hover:text-blue-300 transition-colors duration-300 hover:underline"
+                  >
+                    Click here for resources
+                  </a>
+                </div>
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 group-hover:text-cyan-400 transition-colors duration-300"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </a>
+              </div>
+
+              {/* Decorative Elements */}
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+              <div
+                className="absolute -bottom-2 -left-2 w-3 h-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"
+                style={{ animationDelay: "0.5s" }}
+              ></div>
+            </div>
+          </div>
         ))}
       </div>
 
